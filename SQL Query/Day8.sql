@@ -49,4 +49,106 @@ SELECT CustomerID
 FROM CustomerTab.CustomerOrdersTabl
 GROUP BY CustomerID
 HAVING SUM(OrderQuantity) > 25
-);-- Business scenario Q74 - Customer Order Analysis: Total Product Cost and Top SpenderSELECT CustomerID	, SUM(OrderTotal) AS TotalSpentFROM (SELECT CO.CustomerID			, (CP.Cost * CO.OrderQuantity) AS OrderTotal		FROM CustomerTab.CustomerOrdersTabl CO		INNER JOIN CustomerTab.CustomerProductTabl CP 		ON CO.ProductID = CP.ProductID) AS CustomerOrdersGROUP BY CustomerIDORDER BY TotalSpent;-- Business scenario Q75 - Identifying Unordered Products: Customer and Product AnalysisSELECT CP.ProductID	, CP.ProductDescriptionFROM CustomerTab.CustomerProductTabl CPLEFT JOIN (SELECT DISTINCT CO.ProductID			FROM CustomerTab.CustomerOrdersTabl CO			) AS OrderedProductsON CP.ProductID = OrderedProducts.ProductIDWHERE OrderedProducts.ProductID IS NULL;-- Business scenario Q76 - Customer Average Order Cost Analysis with ThresholdSELECT CustomerID	, AVG(OrderTotal) AS AverageOrderCostFROM (SELECT CO.CustomerID		, (CP.Cost * CO.OrderQuantity) AS OrderTotal		FROM CustomerTab.CustomerOrdersTabl CO		INNER JOIN CustomerTab.CustomerProductTabl CP		ON CO.ProductID = CP.ProductID		) AS CustomerOrdersGROUP BY CustomerIDHAVING AVG(OrderTotal) > 50;-- Business scenario Q77 - Average Salary Analysis for EmployeesSELECT AVG(EP.Salary) AS AverageSalary	, COUNT(*) AS EmployeeCountFROM Employee.Pay AS EPWHERE YEAR(EP.HireDate) = (SELECT YEAR(HireDate)							FROM Employee.Pay							WHERE Salary = (SELECT MAX(Salary)											FROM Employee.Pay											)							);
+);
+
+
+-- Business scenario Q74 - Customer Order Analysis: Total Product Cost and Top Spender
+SELECT CustomerID
+	, SUM(OrderTotal) AS TotalSpent
+FROM (SELECT CO.CustomerID
+			, (CP.Cost * CO.OrderQuantity) AS OrderTotal
+		FROM CustomerTab.CustomerOrdersTabl CO
+		INNER JOIN CustomerTab.CustomerProductTabl CP 
+		ON CO.ProductID = CP.ProductID
+) AS CustomerOrders
+GROUP BY CustomerID
+ORDER BY TotalSpent
+;
+
+
+-- Business scenario Q75 - Identifying Unordered Products: Customer and Product Analysis
+SELECT CP.ProductID
+	, CP.ProductDescription
+FROM CustomerTab.CustomerProductTabl CP
+LEFT JOIN (SELECT DISTINCT CO.ProductID
+			FROM CustomerTab.CustomerOrdersTabl CO
+			) AS OrderedProducts
+ON CP.ProductID = OrderedProducts.ProductID
+WHERE OrderedProducts.ProductID IS NULL
+;
+
+
+-- Business scenario Q76 - Customer Average Order Cost Analysis with Threshold
+SELECT CustomerID
+	, AVG(OrderTotal) AS AverageOrderCost
+FROM (SELECT CO.CustomerID
+		, (CP.Cost * CO.OrderQuantity) AS OrderTotal
+		FROM CustomerTab.CustomerOrdersTabl CO
+		INNER JOIN CustomerTab.CustomerProductTabl CP
+		ON CO.ProductID = CP.ProductID
+		) AS CustomerOrders
+GROUP BY CustomerID
+HAVING AVG(OrderTotal) > 50
+;
+
+
+-- Business scenario Q77 - Average Salary Analysis for Employees
+SELECT AVG(EP.Salary) AS AverageSalary
+	, COUNT(*) AS EmployeeCount
+FROM Employee.Pay AS EP
+WHERE YEAR(EP.HireDate) = (SELECT YEAR(HireDate)
+							FROM Employee.Pay
+							WHERE Salary = (SELECT MAX(Salary)
+											FROM Employee.Pay
+											)
+							)
+;
+
+
+-- .Business scenario Q78 - Promotion Eligibility Analysis
+SELECT EE.EmployeeID
+	, CONCAT(EE.FirstName,' ',EE.LastName) AS FullName
+FROM Employee.Employee EE
+INNER JOIN Employee.Pay EP
+ON EE.EmployeeID = EP.EmployeeID
+WHERE EP.HireDate <= DATEADD(YEAR,-5,GETDATE())
+AND EP.Salary < (SELECT AVG(EP2.Salary)
+					FROM Employee.Pay EP2
+					WHERE EP2.JobTitle = EP.JobTitle
+				)
+;
+
+
+-- Business scenario Q79 - Identifying High-Value Customers
+SELECT CC.CustomerName
+	, CC.Address
+FROM CustomerTab.CustomerTabl CC
+WHERE CC.CustomerID IN (SELECT TOP 10 CO.CustomerID
+					FROM CustomerTab.CustomerOrdersTabl CO
+					GROUP BY CO.CustomerID
+					ORDER BY SUM(CO.OrderQuantity) DESC
+					)
+;
+
+
+-- Business scenario Q80 - Analyse top selling products
+SELECT ProductID
+	, ProductDescription
+	, Cost
+	, 'Top-Selling' AS SalesCategory
+FROM CustomerTab.CustomerProductTabl
+WHERE ProductID IN (SELECT TOP 5 ProductID
+					FROM CustomerTab.CustomerProductTabl
+					ORDER BY Cost DESC
+					)
+UNION
+SELECT ProductID
+	, ProductDescription
+	, Cost
+	, 'Least-Selling' AS SalesCategory
+FROM CustomerTab.CustomerProductTabl
+WHERE ProductID IN (SELECT TOP 5 ProductID
+					FROM CustomerTab.CustomerProductTabl
+					ORDER BY Cost ASC
+					)
+;
