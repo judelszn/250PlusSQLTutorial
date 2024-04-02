@@ -1,4 +1,24 @@
--- Business scenario Q101 - Retrieving Order Details with Customer and SalesmanSELECT SOH.SalesOrderNumber	, SOH.OrderDate	, SOD.OrderQty	, PP.FirstName	, PP.PersonType	, SP.CommissionPctFROM Sales.SalesOrderHeader SOHINNER JOIN Sales.SalesOrderDetail SODON SOH.SalesOrderID = SOD.SalesOrderIDINNER JOIN Sales.Customer SCON SOH.CustomerID = SC.CustomerIDINNER JOIN Sales.SalesPerson SPON SOH.TerritoryID = SP.TerritoryIDINNER JOIN Person.Person PPON SP.BusinessEntityID = PP.BusinessEntityID;-- Business scenario Q102 - Calculating Commission and Margin for ProductsSELECT Color
+-- Business scenario Q101 - Retrieving Order Details with Customer and Salesman
+SELECT SOH.SalesOrderNumber
+	, SOH.OrderDate
+	, SOD.OrderQty
+	, PP.FirstName
+	, PP.PersonType
+	, SP.CommissionPct
+FROM Sales.SalesOrderHeader SOH
+INNER JOIN Sales.SalesOrderDetail SOD
+ON SOH.SalesOrderID = SOD.SalesOrderID
+INNER JOIN Sales.Customer SC
+ON SOH.CustomerID = SC.CustomerID
+INNER JOIN Sales.SalesPerson SP
+ON SOH.TerritoryID = SP.TerritoryID
+INNER JOIN Person.Person PP
+ON SP.BusinessEntityID = PP.BusinessEntityID
+;
+
+
+-- Business scenario Q102 - Calculating Commission and Margin for Products
+SELECT Color
 	, StandardCost
 	, StandardCost * 0.14790 AS COMMISSION
 	, CASE
@@ -27,6 +47,25 @@ GROUP BY PP.ProductID
 
 
 -- Business scenario Q104 - Sales Analysis for Identifying Top-Selling Products and Trends
-SELECT *
-FROM 
+SELECT TOP 10 PP.ProductID
+	, PP.Name AS ProductName
+	, SUM(SOD.OrderQty) AS TotalQuantityOrder
+FROM Sales.SalesOrderDetail SOD
+INNER JOIN Production.Product PP 
+ON SOD.ProductID = PP.ProductID
+GROUP BY PP.ProductID, PP.Name
+ORDER BY SUM(SOD.OrderQty) DESC
+;
+
+
+-- Business scenario Q105 - Sales and Customer Demographics Analysis
+SELECT SC.CustomerID
+	, COUNT(*) AS CustomerCount
+	, AVG(SOH.TotalDue) AS AveragePurchaseAmount
+FROM Sales.SalesOrderHeader SOH
+INNER JOIN Sales.Customer SC
+ON SOH.CustomerID = SC.CustomerID
+INNER JOIN Person.Person PP
+ON SC.PersonID = PP.BusinessEntityID
+GROUP BY SC.CustomerID
 ;
