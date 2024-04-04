@@ -62,7 +62,8 @@ GROUP BY PPV.BusinessEntityID, PV.Name
 ;
 
 
--- Business scenario Q110 - Supplier Performance Evaluation: On-Time Delivery Percentage AnalysisSELECT PPV.BusinessEntityID
+-- Business scenario Q110 - Supplier Performance Evaluation: On-Time Delivery Percentage Analysis
+SELECT PPV.BusinessEntityID
 	, PV.Name AS VendorName
 	, SUM
 		(CASE WHEN DATEDIFF(DAY,POH.OrderDate,POH.ShipDate) <= 0 THEN 1 ELSE 0
@@ -79,4 +80,4 @@ ON POD.PurchaseOrderID = POH.VendorID
 INNER JOIN Purchasing.Vendor PV
 ON PPV.BusinessEntityID = PV.BusinessEntityID
 GROUP BY PPV.BusinessEntityID, PV.Name
-;
+;
