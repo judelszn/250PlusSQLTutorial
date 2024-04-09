@@ -1,0 +1,1 @@
+-- Business scenario Q141 - Password Complexity AssessmentSELECT *FROM;
