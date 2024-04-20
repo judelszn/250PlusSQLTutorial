@@ -101,4 +101,22 @@ ORDER BY ReturnRatePercentage DESC
 ;
 
 
--- Business scenario Q195 - E-commerce Conversion Rate OptimisationWITH WebsiteConversion AS (	SELECT YEAR(OH.OrderDate) AS SalesYear		, COUNT(DISTINCT OH.CustomerID) AS TotalCustomers		, COUNT(SO.SalesOrderID) AS TotalOrders		, 100 * COUNT(SO.SalesOrderID) / COUNT(DISTINCT OH.CustomerID) AS ConversionRate	FROM Sales.SalesOrderHeader OH	LEFT JOIN Sales.SalesOrderHeader SO	ON OH.CustomerID = SO.CustomerID	WHERE YEAR(OH.OrderDate) >= YEAR(GETDATE()) - 20	GROUP BY YEAR(OH.OrderDate))SELECT SalesYear	, TotalCustomers	, TotalOrders	, ConversionRateFROM WebsiteConversionORDER BY SalesYear;
+-- Business scenario Q195 - E-commerce Conversion Rate Optimisation
+WITH WebsiteConversion AS (
+	SELECT YEAR(OH.OrderDate) AS SalesYear
+		, COUNT(DISTINCT OH.CustomerID) AS TotalCustomers
+		, COUNT(SO.SalesOrderID) AS TotalOrders
+		, 100 * COUNT(SO.SalesOrderID) / COUNT(DISTINCT OH.CustomerID) AS ConversionRate
+	FROM Sales.SalesOrderHeader OH
+	LEFT JOIN Sales.SalesOrderHeader SO
+	ON OH.CustomerID = SO.CustomerID
+	WHERE YEAR(OH.OrderDate) >= YEAR(GETDATE()) - 20
+	GROUP BY YEAR(OH.OrderDate)
+)
+SELECT SalesYear
+	, TotalCustomers
+	, TotalOrders
+	, ConversionRate
+FROM WebsiteConversion
+ORDER BY SalesYear
+;
