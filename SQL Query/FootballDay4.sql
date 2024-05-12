@@ -23,7 +23,8 @@ AND P.match_no IN (
 ;
 
 
--- Business scenario Q18 - Analysing First-Half Substitution PatternsSELECT COUNT(*) SubsTitutionsFirstHalfCount
+-- Business scenario Q18 - Analysing First-Half Substitution Patterns
+SELECT COUNT(*) SubsTitutionsFirstHalfCount
 FROM dbo.player_in_out P
 WHERE P.play_half = 1 -- AND P.in_out = 'I' 
 AND P.match_no IN (
