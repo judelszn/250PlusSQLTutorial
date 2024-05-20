@@ -44,7 +44,7 @@ ORDER BY SUM(CombinedFouls.TotalFouls) ASC
 
 
 -- Business scenario Q58 - The Resilient Defenders
-SELECT T.TeamID
+SELECT T.TeamName
 	, SUM(CombinedData.TotalCorners) AS TotalCorrneesFaced
 	, SUM(CombinedData.TotalGoals) AS TotalGoalsConceded
 	, CAST(SUM(CombinedData.TotalGoals) AS FLOAT) / CAST(NULLIF(SUM(CombinedData.TotalCorners), 0) AS FLOAT) AS DefensiveReslienceScore
@@ -68,3 +68,6 @@ FROM (
 INNER JOIN EPL.Teams T ON CombinedData.TeamID = T.TeamID
 GROUP BY T.TeamName
 ;
+
+
+-- Business scenario Q59 - The Thriller MatchesSELECT TH.TeamName AS HomeTeam	, TA.TeamName AS AwayTeam	, M.MatchDate	, M.FullTimeResult	, MS.HomeTeamShots	, MS.AwayTeamShots	, (MS.HomeTeamShots + MS.AwayTeamShots) AS CombinedShotsOnTargetFROM EPL.MatchStats MSINNER JOIN EPL.Matches M ON MS.MatchID = M.MatchIDINNER JOIN EPL.Teams TH ON M.HomeTeamID = TH.TeamIDINNER JOIN EPL.Teams TA ON M.AwayTeamID = TA.TeamIDORDER BY (MS.HomeTeamShots + MS.AwayTeamShots) DESC;-- Business scenario Q60 - The Clean Sheet MastersSELECT T.TeamName	, COUNT(CleanSheets.MatchID) AS TotalCleanSheetsFROM (	SELECT M.HomeTeamID AS TeamID		, M.MatchID 	FROM EPL.Matches M	INNER JOIN EPL.Goals G ON M.MatchID = G.MatchID	WHERE G.FullTimeAwayGoals = 0	UNION ALL	SELECT M.AwayTeamID AS TeamID		, M.MatchID 	FROM EPL.Matches M	INNER JOIN EPL.Goals G ON M.MatchID = G.MatchID	WHERE G.FullTimeHomeGoals = 0	) AS CleanSheetsINNER JOIN EPL.Teams T ON CleanSheets.MatchID = T.TeamIDGROUP BY T.TeamNameORDER BY COUNT(CleanSheets.MatchID) DESC;
