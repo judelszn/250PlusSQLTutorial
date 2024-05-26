@@ -59,4 +59,14 @@ ORDER BY W.Attendance DESC
 ;
 
 
--- Business scenario Q90 - World Cup UnderdogsSELECT W.Year	, W.Country	, W.Winner	, W.GoalsScoredFROM WC.WorldCups WWHERE W.Winner IS NOT NULLORDER BY W.GoalsScored ASCOFFSET 0 ROWSFETCH NEXT 1 ROWS ONLY;
+-- Business scenario Q90 - World Cup Underdogs
+SELECT W.Year
+	, W.Country
+	, W.Winner
+	, W.GoalsScored
+FROM WC.WorldCups W
+WHERE W.Winner IS NOT NULL
+ORDER BY W.GoalsScored ASC
+OFFSET 0 ROWS
+FETCH NEXT 1 ROWS ONLY
+;
