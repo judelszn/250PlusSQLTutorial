@@ -14,6 +14,7 @@ FETCH NEXT 1 ROWS ONLY
 ;
 
 
+
 -- Business scenario Q102 - Goalkeeper's Nightmare
 SELECT M.Year
 	, M.Stadium
@@ -24,6 +25,7 @@ ORDER BY SUM(M.Home_Team_Goals + M.Away_Team_Goals) DESC
 OFFSET 0 ROWS
 FETCH NEXT 1 ROWS ONLY
 ;
+
 
 
 -- Business scenario Q103 - Decade of Dominance
@@ -38,6 +40,7 @@ FETCH NEXT 1 ROWS ONLY
 ;
 
 
+
 -- Business scenario Q104 - Closest Contests
 SELECT M.Year
 	, COUNT(M.MatchID) AS CloseMatches
@@ -48,6 +51,7 @@ ORDER BY COUNT(M.MatchID) DESC
 OFFSET 0 ROWS
 FETCH NEXT 1 ROWS ONLY
 ;
+
 
 
 -- Business scenario Q105 - The Unyielding Fortress
