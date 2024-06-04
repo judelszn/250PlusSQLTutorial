@@ -1,0 +1,62 @@
+USE UEFA;
+
+-- Business scenario Q136 - Top Home Team of the Latest Season
+WITH LastSeason AS (
+	SELECT MAX(M.SEASON) AS Season
+	FROM UCL.Matches M
+	)
+SELECT TOP 1 T.TEAM_NAME AS Team
+	, SUM(M.HOME_TEAM_SCORE) AS TotalHomeGoals
+FROM UCL.Matches M 
+INNER JOIN UCL.Teams T ON M.HOME_TEAM_ID = T.TEAM_ID
+WHERE M.SEASON IN (SELECT LastSeason.Season FROM LastSeason)
+GROUP BY T.TEAM_NAME
+ORDER BY SUM(M.HOME_TEAM_SCORE) DESC
+;
+
+
+
+-- Business scenario Q137 - Frequent Fixture
+SELECT TOP 1 M.HOME_TEAM_ID
+	, M.AWAY_TEAM_ID
+	, COUNT(*) AS MatchCount
+FROM UCL.Matches M
+INNER JOIN UCL.Teams T ON M.HOME_TEAM_ID = T.TEAM_ID OR AWAY_TEAM_ID = T.TEAM_ID
+GROUP BY M.HOME_TEAM_ID, M.AWAY_TEAM_ID
+ORDER BY COUNT(*) DESC
+;
+
+
+
+-- Business scenario Q138 - Best Away Win
+SELECT TOP 1 M.AWAY_TEAM_ID AS AwayTeamID
+	, M.HOME_TEAM_ID AS HomeTeamID
+	, M.AWAY_TEAM_SCORE AS AwayTeamScore
+	, M.HOME_TEAM_SCORE AS HomeTeamScore
+	, M.AWAY_TEAM_SCORE - M.HOME_TEAM_SCORE AS GoalDifference
+	, m.SEASON AS Season
+FROM UCL.Matches M
+ORDER BY M.AWAY_TEAM_SCORE - M.HOME_TEAM_SCORE DESC
+;
+
+
+
+-- Business scenario Q139 - Home Fortress
+SELECT TOP 1 T.TEAM_NAME AS Team
+	, ROUND(AVG(m.HOME_TEAM_SCORE), 2) AS HomeGoals
+FROM UCL.Matches M
+INNER JOIN UCL.Teams T ON M.HOME_TEAM_ID = T.TEAM_ID
+GROUP BY T.TEAM_NAME
+ORDER BY ROUND(AVG(m.HOME_TEAM_SCORE), 2) DESC
+;
+
+
+
+-- Business scenario Q140 - Longest Serving Team
+SELECT TOP 5 T.TEAM_NAME AS Team
+	, MIN(M.SEASON) AS EarliestSeason
+FROM UCL.Matches M
+INNER JOIN UCL.Teams T ON M.HOME_TEAM_ID = T.TEAM_ID
+GROUP BY T.TEAM_NAME
+ORDER BY MIN(M.SEASON) ASC
+;
