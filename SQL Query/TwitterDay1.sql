@@ -32,3 +32,7 @@ LEFT JOIN (SELECT N.UserID
 			) NT ON U.UserID = NT.UserID
 ORDER BY TotalEngagement DESC
 ;
+
+
+
+-- Scenario Q2 - Find Users with Most FollowersSELECT U.UserID	, U.Username	, U.FullName	, COUNT(F.FollowerUserID) AS FollowerCountFROM Twitter.Followers FINNER JOIN Twitter.Users U ON F.FollowedUserID = U.UserIDGROUP BY U.UserID, U.Username, U.FullNameORDER BY COUNT(F.FollowerUserID) DESCOFFSET 0 ROWSFETCH NEXT 5 ROWS ONLY;
