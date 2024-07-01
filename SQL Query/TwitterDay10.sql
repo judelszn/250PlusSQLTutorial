@@ -15,20 +15,20 @@ WITH UserEngagement AS (
 	GROUP BY U.UserID, U.Username, U.FullName
 	),
 TweetVisibility AS (
-	SELECT T.UserID
+	SELECT *
 		, AVG(CAST(COALESCE(LK.LikeCount, 0), AS FLOAT)) AS AverageLikes
 		, AVG(CAST(COALESCE(RT.RetweetCount, 0), AS FLOAT)) AS AverageRetweets
 	FROM Twitter.Tweets T
-	LEFT JOIN (SELECT TweetID
+	LEFT JOIN (SELECT L.TweetID
 					, COUNT(*) AS LikeCount
-				FROM Twitter.Likes
-				GROUP BY TweetID
+				FROM Twitter.Likes L
+				GROUP BY L.TweetID
 				) LK ON T.TweetID = LK.TweetID
 	LEFT JOIN (SELECT R.UserID
 					, COUNT(*) AS RetweetCount
 				FROM Twitter.Retweets R
 				GROUP BY R.UserID
-				) AS RT ON T.UserID = RT.UserID
+				) RT ON T.UserID = RT.UserID
 	GROUP BY T.UserID
 	)
 SELECT * 
