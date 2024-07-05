@@ -6,7 +6,7 @@ Welcome to the SQL Challenge! The purpose of this challenge is to help you pract
 
 In this challenge, you will be working with a dataset containing information about books and their authors. Your goal is to write SQL queries that answer specific questions about the dataset. This will involve tasks such as data retrieval, aggregation, and filtering.
 
-## Books by [Eyo Eyo, PhD]
+## Books by [Eyo Eyo, PhD](https://eyowhite.com)
 
 The SQL Challenge is based on projects from the following books:
 
